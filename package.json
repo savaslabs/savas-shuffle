@@ -1,0 +1,14 @@
+{
+  "name": "savas-shuffle-2.0",
+  "version": "2.0.0",
+  "description": "Generate meeting order",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Tim Stallmann",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.14.0"
+  }
+}
