@@ -15,7 +15,7 @@ var helmet = require('helmet');
 app.use(helmet());
 
 var fs = require('fs');
-eval(fs.readFileSync('conf.js', encoding = "ascii"));
+eval(fs.readFileSync('conf/conf.js', encoding = "ascii"));
 
 Array.prototype.shuffle = function () {
     var i = this.length, j, temp;
@@ -53,7 +53,7 @@ app.get('/', function (req, res) {
         var reply = {};
         switch (req.query.command) {
             case '/meeting':
-                if (req.query.channel_name != conf.meeting-channel) {
+                if (req.query.channel_name != conf.meeting_channel) {
                     reply.text = "Wrong channel!";
                 }
                 else {
