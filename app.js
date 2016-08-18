@@ -10,6 +10,7 @@
 var express = require('express');
 var app = express();
 var http = require('http');
+app.use(require('sanitize').middleware);
 
 var helmet = require('helmet');
 app.use(helmet());
@@ -50,7 +51,7 @@ var meeting = function(req, res, tokens) {
         // Shuffle team members
         var team = conf.team;
         reply.response_type = "in_channel";
-        reply.text = getAbsent(team, req.query.text).shuffle().join("\n");
+        reply.text = getAbsent(team, tokens).shuffle().join("\n");
     }
     res.json(reply);
 }
@@ -89,7 +90,7 @@ var lunch = function(req, res, tokens) {
         response_type: "in_channel",
     };
     var team = conf.moffice;
-    var filtered = getAbsent(team, req.query.text);
+    var filtered = getAbsent(team, tokens);
     reply.text = filtered.shuffle()[0];
     res.json(reply);
 }
@@ -101,8 +102,8 @@ var commands = {
 }
 
 app.get('/', function (req, res) {
-    if (req.query.token == conf.token && req.query.command == '/savas') {
-        var tokens = req.query.text.split(' ');
+    if (req.query.token == conf.token && req.queryString('command') == '/savas') {
+        var tokens = req.queryString('text').toLowerCase().split(' ');
 
         if (commands.hasOwnProperty(tokens[0])) {
             commands[tokens[0]](req, res, tokens.slice(1));
