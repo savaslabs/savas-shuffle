@@ -29,16 +29,8 @@ Array.prototype.shuffle = function () {
     return this;
 }
 
-var getAbsent = function (team, text) {
-    if (text.length > 0) {
-        var absent = Array();
-        if (text.indexOf(',') < 0) {
-            absent = text.toLowerCase().split(' ');
-        }
-        else {
-            absent = text.toLowerCase().split(',');
-        }
-
+var getAbsent = function (team, absent) {
+    if (absent.length > 0) {
         return team.filter(function (i) {
             return absent.indexOf(i.toLowerCase()) < 0;
         });
@@ -48,57 +40,78 @@ var getAbsent = function (team, text) {
     }
 }
 
+// Define commands.
+var meeting = function(req, res, tokens) {
+    var reply = {};
+    if (req.query.channel_name != conf.meeting_channel) {
+        reply.text = "Wrong channel!";
+    }
+    else {
+        // Shuffle team members
+        var team = conf.team;
+        reply.response_type = "in_channel";
+        reply.text = getAbsent(team, req.query.text).shuffle().join("\n");
+    }
+    res.json(reply);
+}
+
+var wisdom = function(req, res, tokens) {
+    var reply = {
+        response_type: "in_channel",
+    };
+    http.get(
+        {
+            hostname: 'quotes.rest',
+            port: 80,
+            path: '/qod.json',
+            agent: false  // create a new agent just for this one request
+        },
+        function (quotes_res) {
+            var body = '';
+            quotes_res.on('data', function (d) { body += d; })
+                .on('error', function (e) { console.log(e); })
+                .on('end', function () {
+                        var quote = JSON.parse(body);
+                        if (quote.hasOwnProperty("success")) {
+                            reply.text = quote.contents.quotes.quote;
+                        }
+                        else {
+                            reply.text = "Sorry, you've already had too much wisdom for today!";
+                        }
+                        res.json(reply);
+                    }
+                );
+        });
+}
+
+var lunch = function(req, res, tokens) {
+    var reply = {
+        response_type: "in_channel",
+    };
+    var team = conf.moffice;
+    var filtered = getAbsent(team, req.query.text);
+    reply.text = filtered.shuffle()[0];
+    res.json(reply);
+}
+
+var commands = {
+    'meeting': meeting,
+    'lunch': lunch,
+    'wisdom': wisdom,
+}
+
 app.get('/', function (req, res) {
-    if (req.query.token == conf.token) {
-        var reply = {};
-        switch (req.query.command) {
-            case '/meeting':
-                if (req.query.channel_name != conf.meeting_channel) {
-                    reply.text = "Wrong channel!";
-                }
-                else {
-                    // Shuffle team members
-                    var team = conf.team;
-                    reply.response_type = "in_channel";
-                    reply.text = getAbsent(team, req.query.text).shuffle().join("\n");
-                }
-                res.json(reply);
-                break;
+    if (req.query.token == conf.token && req.query.command == '/savas') {
+        var tokens = req.query.text.split(' ');
 
-            case '/wisdom':
-                http.get(
-                    {
-                        hostname: 'quotes.rest',
-                        port: 80,
-                        path: '/qod.json',
-                        agent: false  // create a new agent just for this one request
-                    },
-                    function (quotes_res) {
-                        var body = '';
-                        quotes_res.on('data', function (d) { body += d; })
-                            .on('error', function (e) { console.log(e); })
-                            .on('end', function () {
-                                var quote = JSON.parse(body);
-                                if (quote.hasOwnProperty("success")) {
-                                    reply.text = quote.contents.quotes.quote;
-                                }
-                                else {
-                                    reply.text = "Sorry, you've already had too much wisdom for today!";
-                                }
-                                res.json(reply);
-                            }
-                            );
-                    });
-                break;
-
-            case '/lunch':
-                var team = conf.moffice;
-                reply.response_type = "in_channel";
-                var filtered = getAbsent(team, req.query.text);
-                reply.text = filtered.shuffle()[0];
-                res.json(reply);
-                break;
-
+        if (commands.hasOwnProperty(tokens[0])) {
+            commands[tokens[0]](req, res, tokens.slice(1));
+        }
+        else {
+            var reply = {
+                text: "I don't know what you're trying to do! You can say meeting, lunch or wisdom."
+            }
+            res.json(reply);
         }
     }
     else {
