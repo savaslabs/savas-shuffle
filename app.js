@@ -19,11 +19,10 @@ Array.prototype.shuffle = function() {
     return this;
 }
 
-app.get('/shuffle', function (req, res) {
-    console.log(req.query);
+app.get('/', function (req, res) {
     if (req.query.token == conf.token) {
         var reply = {};
-        if (req.query.channel_name != 'monday-meeting') {
+        if (req.query.channel_name != conf.channel) {
             reply.text = "Wrong channel!";
         }
         else {
@@ -39,7 +38,7 @@ app.get('/shuffle', function (req, res) {
             reply.response_type = "in_channel";
             reply.text = team.filter(function(i) {
                 return absent.indexOf(i.toLowerCase()) < 0;
-            }).shuffle().join(", ");
+            }).shuffle().join("\n");
         }
         res.json(reply);
     }
@@ -48,6 +47,6 @@ app.get('/shuffle', function (req, res) {
     }
 });
 
-app.listen(conf.port, function () {
-    console.log('Savas shuffle listening on port ' + conf.port);
+app.listen(8080, function () {
+    console.log('Savas shuffle listening on port 8080');
 });
