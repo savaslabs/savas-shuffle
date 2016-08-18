@@ -14,7 +14,7 @@ Run `npm start` to start listening on port 8080 for incoming requests.
 
 ### Using docker
 
-Run `docker run -p port-number:8080 -v /path/to/this/directory/conf:/usr/src/app/conf -d savaslabs/savas-shuffle` to pull the docker container image for this app, run it as a daemon, and send traffic from localhost:port-number into the app.
+Run `docker run -p port-number:8080 -v $PWD/conf:/usr/src/app/conf -d savaslabs/savas-shuffle` to pull the docker container image for this app, run it as a daemon, and send traffic from localhost:port-number into the app.
 
 Expose `localhost:port-number` via some external URL.
 
