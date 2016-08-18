@@ -28,6 +28,11 @@ From slack, type `/meeting` to get a shuffled list of the full team.
 
 Type `/meeting Name1 Name2 Name3` or `/meeting Name1,Name2,Name3` to get a shuffled list of the team excluding Name1, Name2, and Name3.
 
+Type `/lunch` to get a random name of someone who's in the #moffice.
+Type `/lunch Name1 Name2 Name3` to exclude Name1, Name2 and Name3 as absent.
+
+Type '/wisdom' to get a random quote.
+
 # Development
 
 ## Update docker image

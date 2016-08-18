@@ -1,5 +1,7 @@
 var conf = {
-    team: ['Anne', 'Chris', 'Dan', 'Kosta', 'Lisa', 'Oksana', 'Ro', 'Tim', 'Yonas'],
+    team: ['Someone', 'Someone else'],
+    moffice: ['Someone', 'Someone else'],
     token: '',
-    channel: 'monday-meeting',
+    meeting-channel: 'monday-meeting',
+    port: 8080,
 };
