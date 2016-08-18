@@ -1,3 +1,12 @@
+/**
+ * Savas Shuffle web app.
+ *
+ * This app is an Express.js based listener for incoming Slack command GET requests.
+ *
+ * It listens on `/` for incoming requests, and verifies that they are legitimate
+ * Slack requests by checking the value of `req.query.token`.
+ */
+
 var express = require('express');
 var app = express();
 
@@ -22,23 +31,28 @@ Array.prototype.shuffle = function() {
 app.get('/', function (req, res) {
     if (req.query.token == conf.token) {
         var reply = {};
-        if (req.query.channel_name != conf.channel) {
-            reply.text = "Wrong channel!";
-        }
-        else {
-            // Shuffle team members
-            var absent = new Array();
-            if (req.query.text.indexOf(',') < 0) {
-                absent = req.query.text.toLowerCase().split(' ');
-            }
-            else {
-                absent = req.query.text.toLowerCase().split(',');
-            }
-            var team = conf.team;
-            reply.response_type = "in_channel";
-            reply.text = team.filter(function(i) {
-                return absent.indexOf(i.toLowerCase()) < 0;
-            }).shuffle().join("\n");
+        switch (req.query.command) {
+            case '/meeting':
+                if (req.query.channel_name != conf.channel) {
+                    reply.text = "Wrong channel!";
+                }
+                else {
+                    // Shuffle team members
+                    var absent = new Array();
+                    if (req.query.text.indexOf(',') < 0) {
+                        absent = req.query.text.toLowerCase().split(' ');
+                    }
+                    else {
+                        absent = req.query.text.toLowerCase().split(',');
+                    }
+                    var team = conf.team;
+                    reply.response_type = "in_channel";
+                    reply.text = team.filter(function(i) {
+                        return absent.indexOf(i.toLowerCase()) < 0;
+                    }).shuffle().join("\n");
+                }
+                break;
+
         }
         res.json(reply);
     }
