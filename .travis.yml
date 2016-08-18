@@ -5,6 +5,3 @@ node_js:
 install:
 - npm install
 - cp conf/conf.example.js conf/conf.js
-
-after_failure:
-- travis_debug
