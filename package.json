@@ -9,6 +9,7 @@
   "author": "Tim Stallmann",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.14.0"
+    "express": "^4.14.0",
+    "helmet": "^2.1.2"
   }
 }
