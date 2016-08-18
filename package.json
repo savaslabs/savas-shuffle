@@ -4,7 +4,7 @@
   "description": "Generate meeting order",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node_modules/.bin/mocha -u exports test/integration/*",
     "start": "node app.js"
   },
   "author": "Tim Stallmann",
@@ -13,5 +13,9 @@
     "express": "^4.14.0",
     "helmet": "^2.1.2",
     "sanitize": "^2.0.1"
+  },
+  "devDependencies": {
+    "mocha": "^3.0.2",
+    "supertest": "^2.0.0"
   }
 }

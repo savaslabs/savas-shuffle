@@ -123,3 +123,5 @@ app.get('/', function (req, res) {
 app.listen(conf.port, function () {
     console.log('Savas shuffle listening on port ' + conf.port);
 });
+
+module.exports = app;
