@@ -4,7 +4,7 @@
   "description": "Generate meeting order",
   "main": "app.js",
   "scripts": {
-    "test": "node_modules/.bin/mocha -u exports test/integration/*",
+    "test": "mocha -u exports ./test/*",
     "start": "node app.js"
   },
   "author": "Tim Stallmann",
