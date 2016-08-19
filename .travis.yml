@@ -3,5 +3,12 @@ node_js:
   - "6.1"
 
 install:
-- npm install
-- cp conf/conf.example.js conf/conf.js
+  - npm install
+  - docker pull lukasmartinelli/hadolint
+  - cp conf/conf.example.js conf/conf.js
+
+services:
+  - docker
+
+script:
+  - docker run --rm -i lukasmartinelli/hadolint < Dockerfile
