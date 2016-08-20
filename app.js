@@ -74,7 +74,7 @@ var wisdom = function(req, res, tokens) {
                 .on('end', function () {
                         var quote = JSON.parse(body);
                         if (quote.hasOwnProperty("success")) {
-                            reply.text = quote.contents.quotes.quote;
+                            reply.text = quote.contents.quotes[0].quote + " -" + quote.contents.quotes[0].author;
                         }
                         else {
                             reply.text = "Sorry, you've already had too much wisdom for today!";
@@ -102,7 +102,7 @@ var commands = {
 }
 
 app.get('/', function (req, res) {
-    if (req.query.token == conf.token && req.queryString('command') == '/savas') {
+    if (req.query.token == conf.token && req.queryString('command') == conf.command) {
         var tokens = req.queryString('text').toLowerCase().split(' ');
 
         if (commands.hasOwnProperty(tokens[0])) {
