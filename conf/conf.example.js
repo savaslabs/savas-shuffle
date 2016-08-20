@@ -5,4 +5,5 @@ var conf = {
     token: 'test',
     meeting_channel: 'monday-meeting',
     port: 8080,
+    command: '/savas',
 };
