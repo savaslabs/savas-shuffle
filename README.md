@@ -10,6 +10,10 @@ Then run the app either via node.js or Docker (below), and finally configure the
 
 Configure the server to map incoming https requests at some URL to localhost:8080.
 
+Run `npm install` to install any node modules necessary
+
+Creat the configuration file @ `/conf/conf.js`
+
 Run `npm start` to start listening on port 8080 for incoming requests.
 
 ### Using docker
@@ -24,14 +28,14 @@ Edit the Slack command at https://savaslabs.slack.com/services/B22JGF3GU to set 
 
 # Usage
 
-From slack, type `/savas meeting` to get a shuffled list of the full team.
+From slack, type `/savbot meeting` to get a shuffled list of the full team.
 
-Type `/savas meeting Name1 Name2 Name3` or `/meeting Name1,Name2,Name3` to get a shuffled list of the team excluding Name1, Name2, and Name3.
+Type `/savbot meeting Name1 Name2 Name3` or `/meeting Name1,Name2,Name3` to get a shuffled list of the team excluding Name1, Name2, and Name3.
 
-Type `/savas lunch` to get a random name of someone who's in the #moffice.
-Type `/savas lunch Name1 Name2 Name3` to exclude Name1, Name2 and Name3 as absent.
+Type `/savbot lunch` to get a random name of someone who's in the #moffice.
+Type `/savbot lunch Name1 Name2 Name3` to exclude Name1, Name2 and Name3 as absent.
 
-Type '/savas wisdom' to get a random quote.
+Type '/savbot wisdom' to get a random quote.
 
 # Development
 
