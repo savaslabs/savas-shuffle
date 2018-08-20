@@ -44,15 +44,11 @@ var getAbsent = function (team, absent) {
 // Define commands.
 var meeting = function(req, res, tokens) {
     var reply = {};
-    if (req.query.channel_name != conf.meeting_channel) {
-        reply.text = "Wrong channel!";
-    }
-    else {
-        // Shuffle team members
-        var team = conf.team;
-        reply.response_type = "in_channel";
-        reply.text = getAbsent(team, tokens).shuffle().join("\n");
-    }
+    // Shuffle team members
+    var team = conf.team;
+    reply.response_type = "in_channel";
+    reply.text = getAbsent(team, tokens).shuffle().join("\n");
+
     res.json(reply);
 }
 

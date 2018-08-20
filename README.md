@@ -12,7 +12,7 @@ Configure the server to map incoming https requests at some URL to localhost:808
 
 Run `npm install` to install any node modules necessary
 
-Creat the configuration file @ `/conf/conf.js`
+Create the configuration file @ `/conf/conf.js`
 
 Run `npm start` to start listening on port 8080 for incoming requests.
 
@@ -42,3 +42,7 @@ Type '/savbot wisdom' to get a random quote.
 ## Update docker image
 
 Run `docker build -t savaslabs/savas-shuffle .` and `docker push savaslabs/savas-shuffle`.
+
+## Debugging
+
+An example local URL that should yield a successful result: `http://localhost:8080/?command=/savbot&token=[replace with token]&text=meeting%20chris`

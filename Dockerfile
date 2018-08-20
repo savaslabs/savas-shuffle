@@ -1,5 +1,4 @@
 FROM node:argon
-MAINTAINER Tim Stallmann <tim@savaslabs.com>
 
 # Create app directory
 RUN mkdir -p /usr/src/app
