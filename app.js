@@ -10,6 +10,7 @@
 var express = require('express');
 var app = express();
 var http = require('http');
+var request = require('request');
 app.use(require('sanitize').middleware);
 
 var helmet = require('helmet');
@@ -41,13 +42,93 @@ var getAbsent = function (team, absent) {
     }
 }
 
+/**
+ *
+ * @param list
+ * @returns {Array}
+ *
+ * Takes our conf array with lots of other details about people
+ * and returns an array with just their first name
+ */
+function getFirstNames(list) {
+    var size = list.length;
+    var getFirstNames = [];
+    for (i=0; i < size; i++) {
+        getFirstNames[i] = list[i].firstName;
+    }
+
+    return getFirstNames;
+}
+
+/**
+ *
+ * @param array1
+ * @param array2
+ * @returns {Array}
+ *
+ * Combine two arrays and return an array with
+ * unique objects
+ */
+function combineArrays(array1, array2) {
+    var result_array = [];
+    var arr = array1.concat(array2);
+    var len = arr.length;
+
+    while(len--) {
+        var item = arr[len];
+        var result_length = result_array.length;
+        var add = true;
+        for (i=0; i<result_length; i++) {
+            if(result_array[i].address == item.address)
+            {
+                add = false;
+            }
+        }
+
+        if (add) {
+            result_array.unshift(item);
+        }
+    }
+
+    return result_array;
+}
+
+/**
+ *
+ * @param array1
+ * @param array2
+ * @returns {*}
+ *
+ * Checks to see if two lists can be matched with one another
+ * to verify no one is gift giving to theirself!
+ */
+function verifySantaCompatibility(array1, array2) {
+    // Verify arrays are the same length
+    if (array1.length != array2.length) {
+        return FALSE;
+    }
+
+    var arrLength = array1.length;
+    for(i = 0; i < arrLength; i++) {
+        a = array1[i];
+        b = array2[i];
+        if (a.address == b.address) {
+            return false;
+        }
+    }
+
+    // If we got here, we're good!
+    return true;
+}
+
 // Define commands.
 var meeting = function(req, res, tokens) {
     var reply = {};
     // Shuffle team members
     var team = conf.team;
+    var firstNames = getFirstNames(team);
     reply.response_type = "in_channel";
-    reply.text = getAbsent(team, tokens).shuffle().join("\n");
+    reply.text = getAbsent(firstNames, tokens).shuffle().join("\n");
 
     res.json(reply);
 }
@@ -86,8 +167,57 @@ var lunch = function(req, res, tokens) {
         response_type: "in_channel",
     };
     var team = conf.moffice;
-    var filtered = getAbsent(team, tokens);
+    var firstNames = getFirstNames(team);
+    var filtered = getAbsent(firstNames, tokens);
     reply.text = filtered.shuffle()[0];
+    res.json(reply);
+}
+
+/**
+ *
+ * @param req
+ * @param res
+ * @param tokens
+ *
+ * Command that takes the team and matches gift givers
+ * with receivers ensuring no one gets themself. Each giver receives a private
+ * Slack message letting them know who they have and where to send the gift
+ * if they're not in the office together.
+ */
+var savasclaus = function(req, res, tokens) {
+    var reply = {};
+    var team = conf.team;
+    var moffice = conf.moffice;
+    var givers = combineArrays(team, moffice).shuffle();
+    var receivers = combineArrays(team, moffice).shuffle();
+
+    //  If anyone is giving to themselves, let's reshuffle
+    while (verifySantaCompatibility(givers, receivers) == false) {
+        receivers.shuffle();
+    }
+
+    var lenth = receivers.length;
+    for (i=0; i < lenth; i++) {
+        var text = "Dearest *" + givers[i].firstName + "*, you will be Savas Claus-ing :santa: for *" + receivers[i].firstName;
+        text += "*\n Their address is: " + receivers[i].address;
+        text += "\n Remember, spend no more than $1,000.00 :moneybag: on the :gift:. We want to keep things _reasonable_<https://www.youtube.com/watch?v=B6jCMaiTqG0|!>";
+
+        var replyBody = '';
+        request.post({
+            url: conf.slack_webhook_url,
+            body: '{"channel":"@' + givers[i].slackID + '","text":"' + text + '"}'
+            // For testing body: '{"channel":"@chris","text":"' + text + '"}'
+        }  ,(error, res, body) => {
+            if (error) {
+                console.error(error);
+                return;
+            }
+            replyBody = body;
+        })
+
+    }
+
+    reply.body = replyBody;
     res.json(reply);
 }
 
@@ -95,6 +225,7 @@ var commands = {
     'meeting': meeting,
     'lunch': lunch,
     'wisdom': wisdom,
+    'savasclaus': savasclaus,
 }
 
 app.get('/', function (req, res) {
@@ -106,7 +237,7 @@ app.get('/', function (req, res) {
         }
         else {
             var reply = {
-                text: "I don't know what you're trying to do! You can say meeting, lunch or wisdom."
+                text: "I don't know what you're trying to do! You can say meeting, lunch, or savasclaus."
             }
             res.json(reply);
         }
