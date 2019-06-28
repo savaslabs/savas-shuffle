@@ -122,7 +122,7 @@ function verifySantaCompatibility(array1, array2) {
 }
 
 // Define commands.
-var meeting = function(req, res, tokens) {
+var list = function(req, res, tokens) {
     var reply = {};
     // Shuffle team members
     var team = conf.team;
@@ -162,7 +162,7 @@ var wisdom = function(req, res, tokens) {
         });
 }
 
-var lunch = function(req, res, tokens) {
+var single = function(req, res, tokens) {
     var reply = {
         response_type: "in_channel",
     };
@@ -222,8 +222,11 @@ var savasclaus = function(req, res, tokens) {
 }
 
 var commands = {
-    'meeting': meeting,
-    'lunch': lunch,
+    'list': list,
+    'meeting': list,
+    'single': single,
+    'lunch': single,
+    'drinks': single,
     'wisdom': wisdom,
     'savasclaus': savasclaus,
 }
@@ -237,7 +240,7 @@ app.get('/', function (req, res) {
         }
         else {
             var reply = {
-                text: "I don't know what you're trying to do! You can say meeting, lunch, or savasclaus."
+                text: "I don't know what you're trying to do! You can say meeting, lunch, drinks, or savasclaus."
             }
             res.json(reply);
         }
