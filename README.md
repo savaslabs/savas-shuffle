@@ -46,3 +46,9 @@ Run `docker build -t savaslabs/savas-shuffle .` and `docker push savaslabs/savas
 ## Debugging
 
 An example local URL that should yield a successful result: `http://localhost:8080/?command=/savbot&token=[replace with token]&text=meeting%20chris`
+
+# Production Deployment
+
+**Caveat Emptor: a Docker non-expert has documented the following**
+
+Merging an update into the `master` branch, should trigger a Docker image build on the [Docker Hub repository](https://cloud.docker.com/u/savaslabs/repository/registry-1.docker.io/savaslabs/savas-slack-tools). By default, it will get tagged with `latest`. When deploying to production, you'll have to pull the new image and either restart or rebuild the app. Specific instructions are in our internal documentation which resides [here](https://gitlab.com/savaslabs/infrastructure/blob/master/docker.md).

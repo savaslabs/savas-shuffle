@@ -125,7 +125,7 @@ function verifySantaCompatibility(array1, array2) {
 var list = function(req, res, tokens) {
     var reply = {};
     // Shuffle team members
-    var team = conf.team;
+    var team = getFullTeam();
     var firstNames = getFirstNames(team);
     reply.response_type = "in_channel";
     reply.text = getAbsent(firstNames, tokens).shuffle().join("\n");
@@ -166,7 +166,7 @@ var single = function(req, res, tokens) {
     var reply = {
         response_type: "in_channel",
     };
-    var team = conf.moffice;
+    var team = getFullTeam();
     var firstNames = getFirstNames(team);
     var filtered = getAbsent(firstNames, tokens);
     reply.text = filtered.shuffle()[0];
@@ -186,10 +186,8 @@ var single = function(req, res, tokens) {
  */
 var savasclaus = function(req, res, tokens) {
     var reply = {};
-    var team = conf.team;
-    var moffice = conf.moffice;
-    var givers = combineArrays(team, moffice).shuffle();
-    var receivers = combineArrays(team, moffice).shuffle();
+    var givers = getFullTeam();
+    var receivers = getFullTeam();
 
     //  If anyone is giving to themselves, let's reshuffle
     while (verifySantaCompatibility(givers, receivers) == false) {
@@ -221,6 +219,18 @@ var savasclaus = function(req, res, tokens) {
     res.json(reply);
 }
 
+/**
+ *
+ * @returns {Array}
+ */
+function getFullTeam() {
+    var remoteTeam = conf.remote_team;
+    var durhamOffice = conf.durham_office;
+    var fullTeam = combineArrays(remoteTeam, durhamOffice);
+
+    return fullTeam;
+}
+
 var commands = {
     'list': list,
     'meeting': list,
@@ -240,7 +250,7 @@ app.get('/', function (req, res) {
         }
         else {
             var reply = {
-                text: "I don't know what you're trying to do! You can say meeting, lunch, drinks, or savasclaus."
+                text: "I don't know what you're trying to do! You can say meeting, list, single, lunch, drinks, or savasclaus."
             }
             res.json(reply);
         }
