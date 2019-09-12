@@ -173,6 +173,19 @@ var single = function(req, res, tokens) {
     res.json(reply);
 }
 
+// This should probably be some soft of inheritance of single
+var lunch = function(req, res, tokens) {
+    var reply = {
+        response_type: "in_channel",
+    };
+    var team = getDurhamOfficeTeam();
+    var firstNames = getFirstNames(team);
+    var filtered = getAbsent(firstNames, tokens);
+    reply.text = filtered.shuffle()[0];
+    res.json(reply);
+}
+
+
 /**
  *
  * @param req
@@ -231,11 +244,19 @@ function getFullTeam() {
     return fullTeam;
 }
 
+/**
+ *
+ * @returns {Array}
+ */
+function getDurhamOfficeTeam() {
+    return conf.durham_office;
+}
+
 var commands = {
     'list': list,
     'meeting': list,
     'single': single,
-    'lunch': single,
+    'lunch': lunch,
     'drinks': single,
     'wisdom': wisdom,
     'savasclaus': savasclaus,
