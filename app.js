@@ -257,7 +257,7 @@ var commands = {
     'meeting': list,
     'single': single,
     'lunch': lunch,
-    'drinks': single,
+    'drinks': lunch,
     'wisdom': wisdom,
     'savasclaus': savasclaus,
 }
