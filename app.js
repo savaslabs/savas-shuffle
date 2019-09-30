@@ -79,7 +79,7 @@ function combineArrays(array1, array2) {
         var result_length = result_array.length;
         var add = true;
         for (i=0; i<result_length; i++) {
-            if(result_array[i].address == item.address)
+            if(result_array[i].slackID == item.slackID)
             {
                 add = false;
             }
