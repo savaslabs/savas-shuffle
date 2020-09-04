@@ -185,6 +185,74 @@ var lunch = function(req, res, tokens) {
     res.json(reply);
 }
 
+/*
+ Todo: There are issues with perhaps both scope
+ AND order of execution based on reaching out to the Airtable
+ */
+var quote = function(req, res, tokens) {
+    var reply = {
+        response_type: "in_channel",
+    };
+    var quotes = getQuotes();
+    // This is not yet returning quotes, so not able to randomly pull one out yet
+    //setTimeout(function(){  }, 3000);
+    console.log('after this run ' + quotes.length);
+    var people = getPeople();
+    var rand = Math.floor(Math.random() * (50) ) + 1;
+    reply.text = "'> This is a quote -- probably something borderline NSFW' - Ava";
+    res.json(reply);
+}
+
+
+var getQuotes = function() {
+
+    // Not sure if I should have added something to README or package.json or somewhere else to ensure this library is loaded by default with npm install
+    var Airtable = require('airtable');
+    Airtable.configure({
+        endpointUrl: 'https://api.airtable.com',
+        apiKey: conf.airtable_api_key
+    });
+    var base = Airtable.base('appqDblKeJfBZlCCl');
+    var records2 = [];
+    console.log(records2.length);
+
+    base('Quotes').select({
+        // Selecting the first 3 records in Grid view:
+        // maxRecords: 3,
+        // view: "Grid view"
+    }).eachPage(function page(records, fetchNextPage) {
+        // This function (`page`) will get called for each page of records.
+
+        records.forEach(function(record) {
+            records2[records2.length] = record;
+        });
+
+        // To fetch the next page of records, call `fetchNextPage`.
+        // If there are more records, `page` will get called again.
+        // If there are no more records, `done` will get called.
+        fetchNextPage();
+
+    }, function done(err) {
+        if (err) {
+            console.error(err);
+            return;
+        } else {
+            console.log(records2.length);
+            return records2;
+        }
+    });
+
+    console.log(records2.length);
+    return records2;
+
+}
+
+// TODO: not sure the best way to reference the people from teh quotes table -- maybe could do one pull from
+// the quotes table via
+var getPeople = function() {
+
+}
+
 
 /**
  *
@@ -260,6 +328,7 @@ var commands = {
     'drinks': lunch,
     'wisdom': wisdom,
     'savasclaus': savasclaus,
+    'quote': quote,
 }
 
 app.get('/', function (req, res) {
@@ -271,7 +340,7 @@ app.get('/', function (req, res) {
         }
         else {
             var reply = {
-                text: "I don't know what you're trying to do! You can say meeting, list, single, lunch, drinks, or savasclaus."
+                text: "I don't know what you're trying to do! You can say meeting, list, single, lunch, drinks, savasclaus, or quote."
             }
             res.json(reply);
         }
