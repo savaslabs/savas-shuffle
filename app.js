@@ -11,6 +11,7 @@ var express = require('express');
 var app = express();
 var http = require('http');
 var request = require('request');
+const airtableJson = require('airtable-json').default
 app.use(require('sanitize').middleware);
 
 var helmet = require('helmet');
@@ -185,74 +186,35 @@ var lunch = function(req, res, tokens) {
     res.json(reply);
 }
 
-/*
- Todo: There are issues with perhaps both scope
- AND order of execution based on reaching out to the Airtable
+/**
+ *
+ * @param req
+ * @param res
+ * @param tokens
+ *
+ * Command that renders a random quote from the Quotes airtable with
+ * attribution if it exists.
  */
-var quote = function(req, res, tokens) {
-    var reply = {
-        response_type: "in_channel",
-    };
-    var quotes = getQuotes();
-    // This is not yet returning quotes, so not able to randomly pull one out yet
-    //setTimeout(function(){  }, 3000);
-    console.log('after this run ' + quotes.length);
-    var people = getPeople();
-    var rand = Math.floor(Math.random() * (50) ) + 1;
-    reply.text = "'> This is a quote -- probably something borderline NSFW' - Ava";
-    res.json(reply);
-}
+const quote = async (req, res, tokens) => {
 
+    let reply = { response_type: "in_channel" }
 
-var getQuotes = function() {
+    const auth_key = conf.airtable_api_key
+    const base_name = 'appqDblKeJfBZlCCl'
+    const primary = 'Quotes'
+    const view = 'Grid view'
+    const populate = [{ local: 'Attribution', other: 'People' }]
 
-    // Not sure if I should have added something to README or package.json or somewhere else to ensure this library is loaded by default with npm install
-    var Airtable = require('airtable');
-    Airtable.configure({
-        endpointUrl: 'https://api.airtable.com',
-        apiKey: conf.airtable_api_key
-    });
-    var base = Airtable.base('appqDblKeJfBZlCCl');
-    var records2 = [];
-    console.log(records2.length);
+    const quotes = await airtableJson({ auth_key, base_name, primary, view, populate })
+    
+    let selected = quotes[Math.floor(Math.random() * quotes.length)]
 
-    base('Quotes').select({
-        // Selecting the first 3 records in Grid view:
-        // maxRecords: 3,
-        // view: "Grid view"
-    }).eachPage(function page(records, fetchNextPage) {
-        // This function (`page`) will get called for each page of records.
+    reply.text = `> ${selected.Quote}`
+    reply.text += selected.Attribution ? `\n> — ${selected.Attribution[0].Name}` : ''
 
-        records.forEach(function(record) {
-            records2[records2.length] = record;
-        });
-
-        // To fetch the next page of records, call `fetchNextPage`.
-        // If there are more records, `page` will get called again.
-        // If there are no more records, `done` will get called.
-        fetchNextPage();
-
-    }, function done(err) {
-        if (err) {
-            console.error(err);
-            return;
-        } else {
-            console.log(records2.length);
-            return records2;
-        }
-    });
-
-    console.log(records2.length);
-    return records2;
+    res.json(reply)
 
 }
-
-// TODO: not sure the best way to reference the people from teh quotes table -- maybe could do one pull from
-// the quotes table via
-var getPeople = function() {
-
-}
-
 
 /**
  *
@@ -329,6 +291,7 @@ var commands = {
     'wisdom': wisdom,
     'savasclaus': savasclaus,
     'quote': quote,
+    'random': quote,
 }
 
 app.get('/', function (req, res) {
