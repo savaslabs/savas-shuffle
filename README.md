@@ -35,7 +35,9 @@ Type `/savbot meeting Name1 Name2 Name3` or `/meeting Name1,Name2,Name3` to get 
 Type `/savbot lunch` to get a random name of someone who's in the #moffice.
 Type `/savbot lunch Name1 Name2 Name3` to exclude Name1, Name2 and Name3 as absent.
 
-Type '/savbot wisdom' to get a random quote.
+Type `/savbot wisdom` to get a random quote.
+
+Type `/savbot quote` to get a quote generated from team discussions that are intentionally captured because of their silliness and irreverence.
 
 # Development
 

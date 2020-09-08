@@ -11,6 +11,7 @@ var express = require('express');
 var app = express();
 var http = require('http');
 var request = require('request');
+const airtableJson = require('airtable-json').default
 app.use(require('sanitize').middleware);
 
 var helmet = require('helmet');
@@ -185,6 +186,35 @@ var lunch = function(req, res, tokens) {
     res.json(reply);
 }
 
+/**
+ *
+ * @param req
+ * @param res
+ * @param tokens
+ *
+ * Command that renders a random quote from the Quotes airtable with
+ * attribution if it exists.
+ */
+const quote = async (req, res, tokens) => {
+
+    let reply = { response_type: "in_channel" }
+
+    const auth_key = conf.airtable_api_key
+    const base_name = 'appqDblKeJfBZlCCl'
+    const primary = 'Quotes'
+    const view = 'Grid view'
+    const populate = [{ local: 'Attribution', other: 'People' }]
+
+    const quotes = await airtableJson({ auth_key, base_name, primary, view, populate })
+    
+    let selected = quotes[Math.floor(Math.random() * quotes.length)]
+
+    reply.text = `> ${selected.Quote}`
+    reply.text += selected.Attribution ? `\n> — ${selected.Attribution[0].Name}` : ''
+
+    res.json(reply)
+
+}
 
 /**
  *
@@ -260,6 +290,8 @@ var commands = {
     'drinks': lunch,
     'wisdom': wisdom,
     'savasclaus': savasclaus,
+    'quote': quote,
+    'random': quote,
 }
 
 app.get('/', function (req, res) {
@@ -271,7 +303,7 @@ app.get('/', function (req, res) {
         }
         else {
             var reply = {
-                text: "I don't know what you're trying to do! You can say meeting, list, single, lunch, drinks, or savasclaus."
+                text: "I don't know what you're trying to do! You can say meeting, list, single, lunch, drinks, savasclaus, or quote."
             }
             res.json(reply);
         }
