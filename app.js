@@ -7,17 +7,18 @@
  * Slack requests by checking the value of `req.query.token`.
  */
 
-var express = require('express');
-var app = express();
-var http = require('http');
-var request = require('request');
+const express = require('express')
+const app = express()
+const http = require('http')
+const request = require('request')
+const helmet = require('helmet')
 const airtableJson = require('airtable-json').default
-app.use(require('sanitize').middleware);
+const sanitize = require('sanitize').middleware
+const fs = require('fs')
 
-var helmet = require('helmet');
-app.use(helmet());
+app.use(sanitize)
+app.use(helmet())
 
-var fs = require('fs');
 eval(fs.readFileSync('conf/conf.js', encoding = "ascii"));
 
 Array.prototype.shuffle = function () {
@@ -206,7 +207,7 @@ const quote = async (req, res, tokens) => {
     const populate = [{ local: 'Attribution', other: 'People' }]
 
     const quotes = await airtableJson({ auth_key, base_name, primary, view, populate })
-    
+
     let selected = quotes[Math.floor(Math.random() * quotes.length)]
 
     reply.text = `> ${selected.Quote}`
