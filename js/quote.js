@@ -1,7 +1,7 @@
 const airtableJson = require('airtable-json').default
 
 module.exports = async (req, res, conf, params) => {
-  const auth_key = conf.airtable_api_key
+  const auth_key = conf.airtable_read_api_key
   const base_name = 'appqDblKeJfBZlCCl'
   const primary = 'Quotes'
   const view = 'Grid view'
