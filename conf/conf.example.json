@@ -1,0 +1,34 @@
+{
+  "team": [
+    {
+      "firstName": "Chris",
+      "knownAs": "Chris",
+      "lastName": "Russo",
+      "address": "A bike\nDurham, NC 27701",
+      "slackID": "c.money",
+      "type": "local"
+    },
+    {
+      "firstName": "Ben",
+      "knownAs": "Benny",
+      "lastName": "Eckerson",
+      "address": "A building\nRaleigh, NC 2770something",
+      "slackID": "b.money",
+      "type": "local"
+    },
+    {
+      "firstName": "Dan",
+      "knownAs": "Dan",
+      "lastName": "Murphy",
+      "address": "A building\nBoston, MA 90210",
+      "slackID": "d.mulah",
+      "type": "remote"
+    },
+  ],
+  "port": 8080,
+  "command": "/savbot",
+  "token": "[String provided by Slack]",
+  "slack_webhook_url": "[URL provided by Slack]",
+  "airtable_read_api_key": "[String available in our password manager]",
+  "airtable_write_api_key": "[String available in our password manager]"
+}

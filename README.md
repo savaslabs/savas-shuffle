@@ -2,7 +2,7 @@ Slack integration to report the order of the weekly meeting.
 
 # Installation
 
-Copy `conf.example.js` into `conf.js` and add the Slack secret token from the Slack command configuration page (https://savaslabs.slack.com/services/B22JGF3GU). This is also where you would add new team members, or change the channel that the bot responds to.
+Duplicate `conf.example.json` as `conf.json` and add the Slack secret token from the Slack command configuration page (https://savaslabs.slack.com/services/B22JGF3GU). This is also where you would add new team members, or change the channel that the bot responds to.
 
 Then run the app either via node.js or Docker (below), and finally configure the Slack integration.
 
@@ -12,7 +12,7 @@ Configure the server to map incoming https requests at some URL to localhost:808
 
 Run `npm install` to install any node modules necessary
 
-Create the configuration file @ `/conf/conf.js`
+Create the configuration file @ `/conf/conf.json`
 
 Run `npm start` to start listening on port 8080 for incoming requests.
 
@@ -24,20 +24,21 @@ Expose `localhost:port-number` via some external URL.
 
 ### Configuring Slack
 
-Edit the Slack command at https://savaslabs.slack.com/services/B22JGF3GU to set up `/meeting` to send a `GET` request to the server URL that the application is listening on.
+Edit the Slack command at https://savaslabs.slack.com/services/B22JGF3GU to set up `/savbot` to send a `GET` request to the server URL that the application is listening on.
 
 # Usage
 
-From slack, type `/savbot meeting` to get a shuffled list of the full team.
+From Slack, type `/savbot` followed by a directive or alias, followed by zero or more space-separated parameters.
 
-Type `/savbot meeting Name1 Name2 Name3` or `/meeting Name1,Name2,Name3` to get a shuffled list of the team excluding Name1, Name2, and Name3.
+| Directive | Aliases | Description | Syntax | Parameters |
+| --- | --- | --- | --- | --- |
+| `single` | `lunch` |  Selects a random Savasian (excluding any who are absent). | `/savbot single [absentee(s)]` | <dl><dt>absentee(s) [optional]</dt><dd>One or more people referred to by their `knownAs` name, separated by spaces.</dd></dl>  |
+| `list` | `meeting` | A randomly ordered list of Savasians (excluding any who are absent). | `/savbot list [absentee(s)]` | <dl><dt>absentee(s) [optional]</dt><dd>One or more people referred to by their `knownAs` name, separated by spaces.</dd></dl>  |
+| `quote` | `random` | A randomly chosen silly/irreverent team quote from the Quotes Airtable. | `/savbot quote` |   |
+| `teams` |   | Randomly split Savasians into [n] balanced teams (excluding any who are absent). | `/savbot teams [n] [absentee(s)]` | <dl><dt>n [optional]</dt><dd>An integer representing the number of teams. Defaults to `2`.</dd><dt>absentee(s) [optional]</dt><dd>One or more people referred to by their `knownAs` name, separated by spaces.</dd></dl> |
+| `savasclause` |   | Randomly and secretly assign Savasians a Savas Claus gift recipient. | `/savbot savasclaus [absentee(s)]` | <dl><dt>absentee(s) [optional]</dt><dd>One or more people referred to by their `knownAs` name, separated by spaces.</dd></dl> |
+| `save` |   | Save one or more links to the Savbot Links Airtable, categorized with optional #tags and @mentions. | `/savbot save [message]` | <dl><dt>message</dt><dd>Message containing one or more links, zero or more #tags, and zero or more @mentions.</dd></dl> |
 
-Type `/savbot lunch` to get a random name of someone who's in the #moffice.
-Type `/savbot lunch Name1 Name2 Name3` to exclude Name1, Name2 and Name3 as absent.
-
-Type `/savbot wisdom` to get a random quote.
-
-Type `/savbot quote` to get a quote generated from team discussions that are intentionally captured because of their silliness and irreverence.
 
 # Development
 

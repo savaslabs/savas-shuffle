@@ -40,3 +40,4 @@ jspm_packages
 
 # Configuration file
 conf/conf.js
+conf/conf.json
