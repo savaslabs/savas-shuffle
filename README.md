@@ -37,6 +37,7 @@ From Slack, type `/savbot` followed by a directive or alias, followed by zero or
 | `quote` | `random` | A randomly chosen silly/irreverent team quote from the Quotes Airtable. | `/savbot quote` |   |
 | `teams` |   | Randomly split Savasians into [n] balanced teams (excluding any who are absent). | `/savbot teams [n] [absentee(s)]` | <dl><dt>n [optional]</dt><dd>An integer representing the number of teams. Defaults to `2`.</dd><dt>absentee(s) [optional]</dt><dd>One or more people referred to by their `knownAs` name, separated by spaces.</dd></dl> |
 | `savasclause` |   | Randomly and secretly assign Savasians a Savas Claus gift recipient. | `/savbot savasclaus [absentee(s)]` | <dl><dt>absentee(s) [optional]</dt><dd>One or more people referred to by their `knownAs` name, separated by spaces.</dd></dl> |
+| `save` |   | Save one or more links to the Savbot Links Airtable, categorized with optional #tags and @mentions. | `/savbot save [message]` | <dl><dt>message</dt><dd>Message containing one or more links, zero or more #tags, and zero or more @mentions.</dd></dl> |
 
 
 # Development
