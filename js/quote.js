@@ -1,5 +1,12 @@
 const airtableJson = require('airtable-json').default
 
+/**
+ * Gets and replies with a random quote from the Quotes Airtable
+ * @param {Object} req - ExpressJS request
+ * @param {Object} res - ExpressJS response
+ * @param {Object} conf - Configuration data from ./conf/conf.json
+ * @param {*} params - Currently unused
+ */
 module.exports = async (req, res, conf, params) => {
   const auth_key = conf.airtable_read_api_key
   const base_name = 'appqDblKeJfBZlCCl'

@@ -17,9 +17,10 @@ app.use(helmet())
 // directives
 const single      = require('./js/single')
 const list        = require('./js/list')
-const teams       = require('./js/teams')
 const quote       = require('./js/quote')
 const savasclaus  = require('./js/savasclaus')
+const save        = require('./js/save')
+const teams       = require('./js/teams')
 
 // aliases
 const aliases = {
@@ -30,7 +31,7 @@ const aliases = {
   quote: quote,
   random: quote,
   savasclaus: savasclaus,
-  // save: save
+  save: save,
   teams: teams,
 }
 
